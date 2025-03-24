@@ -1,5 +1,9 @@
 (ns big-demo.simple)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Recursive functions ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn quick-sort [[pivot & coll]]
   (when pivot
     (let [smaller-than-pivot   (filterv (fn ltp [v] (< v pivot)) coll)
@@ -12,5 +16,44 @@
 (comment
 
   (quick-sort '[3 4 2 7 8 0 9 8 2 3])
+
+  )
+
+;;;;;;;;;;;;;;;;
+;; Exceptions ;;
+;;;;;;;;;;;;;;;;
+
+(defn foo [n]
+  (->> (range n)
+       (filter odd?)
+       (partition-all 2)
+       (map second)
+       (drop 10)
+       (reduce +)))
+
+
+(comment
+
+  (foo 72) ;; works
+  (foo 70) ;; throws
+
+
+  )
+
+
+;;;;;;;;;;;;;;;
+;; Libraries ;;
+;;;;;;;;;;;;;;;
+
+
+(comment
+
+  (require '[clojure.data.codec.base64 :as b64])
+
+
+  (-> "Clojure rocks!!!"
+      .getBytes
+      b64/encode
+      String.)
 
   )
