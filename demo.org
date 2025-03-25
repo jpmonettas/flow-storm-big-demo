@@ -10,13 +10,13 @@ Editor/IDE independent recording and visualization of Clojure programs :
 with interactive programming in mind (for dev, a repl companion)
 
 ** How can it help me?
-
-      - With debugging
+      
       - Learning/Understanding, from simple functions to entire systems, from a runtime perspective
+      - With debugging
       - With iterative/interactive development by value capture (like snitch, etc)
+      - Enhancing static code reading by providing more details like values shapes
       - Visualizing complex and possibly real time changing data
-      - Enhancing static code reading by providing more details like values shapes     
-
+      
 * Demos
 
 - Ergonomics in 4.2.2 (global setup)
