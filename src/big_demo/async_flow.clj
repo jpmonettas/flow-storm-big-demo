@@ -49,6 +49,7 @@
               :firsts "A map with :num"}})
   ([_] {:nums-found 0
         ::flow/in-ports {:numbers-in-ch numbers-in-ch}})
+  ([state _] state)
   ([state ch-id msg]
    (if (= :numbers-in-ch ch-id)
      (let [num msg]
@@ -64,6 +65,7 @@
   ([] {:ins  {:nums-in "A map with :num key"}
        :outs {:evens "A map with :evens-found and :even"}})
   ([_] {:evens-found 0})
+  ([state _] state)
   ([state ch-id msg]
    (if (= :nums-in ch-id)
      (let [{:keys [num]} msg]
@@ -78,6 +80,7 @@
   ([] {:ins  {:nums-in "A number"}
        :outs {:odds "A map with :odds-found and :odd"}})
   ([_] {:odds-found 0})
+  ([state _] state)
   ([state ch-id msg]
    (if (= :nums-in ch-id)
      (let [{:keys [num]} msg]
@@ -91,6 +94,8 @@
 (defn forwarder
   ([] {:ins  {:anything-in "Anything"}
        :outs {:anything-out "The same things that went in"}})
+  ([_])
+  ([state _] state)
   ([_ ch-id msg]
    (if (= :anything-in ch-id)
      [nil {:anything-out [msg]}]
@@ -100,6 +105,8 @@
   ([] {:ins {:things "Anything comming here will be serialized to a string"
              :logger "Anything comming here will be serialized to a string starting with Logger"}
        :outs {:strings "String serialization"}})
+  ([_])
+  ([state _] state)
   ([_ ch-id {:keys [odds-found evens-found nums-found num] :as thing}]
    (case ch-id
      :things [nil {:strings [(format "Odds cnt: %d, Evens cnt: %d, Nums cnt: %d, Num: %d" odds-found evens-found nums-found num)]}]
@@ -107,6 +114,8 @@
 
 (defn printer
   ([] {:ins {:strings "Any string comming here will be printed"}})
+  ([_])
+  ([state _] state)
   ([_ ch-id msg]
    (when (= :strings ch-id)
      (println msg))))
@@ -114,23 +123,14 @@
 (def system-graph
   (flow/create-flow
    {:procs
-    {:nums-counter {:proc (flow/process {:describe nums-counter
-                                         :init nums-counter
-                                         :transform nums-counter})}
-     :only-evens   {:proc (flow/process {:describe only-evens
-                                         :init only-evens
-                                         :transform only-evens})
+    {:nums-counter {:proc (flow/process nums-counter)}
+     :only-evens   {:proc (flow/process only-evens)
                     :chan-opts {:nums-in {:buf-or-n (async/sliding-buffer 1)
                                           :xform (map (fn [msg] (update msg :num #(* 100 %))))}}}
-     :only-odds    {:proc (flow/process {:describe only-odds
-                                         :init only-odds
-                                         :transform only-odds})}
-     :forwarder    {:proc (flow/process {:describe forwarder
-                                         :transform forwarder})}
-     :serializer   {:proc (flow/process {:describe serializer
-                                         :transform serializer})}
-     :printer      {:proc (flow/process {:describe printer
-                                         :transform printer})}}
+     :only-odds    {:proc (flow/process only-odds)}
+     :forwarder    {:proc (flow/process forwarder)}
+     :serializer   {:proc (flow/process serializer)}
+     :printer      {:proc (flow/process printer)}}
 
     :conns
     [[[:nums-counter :nums]         [:only-odds  :nums-in]]

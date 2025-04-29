@@ -16,6 +16,7 @@
 (comment
 
   (quick-sort '[3 4 2 7 8 0 9 8 2 3])
+  (quick-sort '[3 4 2 7 ])
 
   )
 
@@ -56,4 +57,17 @@
       b64/encode
       String.)
 
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Total order timeline ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(comment
+
+  (def c [3 4 2 7 8 0 9 8 2 3])
+  (pmap quick-sort [(shuffle c)
+                    (shuffle c)
+                    (shuffle c)
+                    (shuffle c)])
   )

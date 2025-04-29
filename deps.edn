@@ -9,7 +9,8 @@
         org.clojure/data.codec {:mvn/version "0.1.1"}
 
         ;; async plugin demo
-        org.clojure/core.async {:git/sha "7cc715ac25b4a0f232a7fe1049f90f14ef10fd96" :git/url "https://github.com/clojure/core.async"}
+        org.clojure/core.async {:mvn/version "1.9.808-alpha1"}
+        io.github.clojure/core.async.flow-monitor {:git/tag "v0.1.0" :git/sha "9d02164"}
 
         ;; clojure script compiler demos
         org.clojure/clojurescript {:local/root "/home/jmonetta/my-projects/clojurescript/origin-master"}}
