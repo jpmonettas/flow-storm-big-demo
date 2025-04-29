@@ -71,3 +71,31 @@
                     (shuffle c)
                     (shuffle c)])
   )
+
+;;;;;;;;;;;;;;;;;;;;
+;; Snapshot value ;;
+;;;;;;;;;;;;;;;;;;;;
+
+(comment
+
+
+  (let [a (java.util.ArrayList.)]
+    (count a)
+    (.add a "hello")
+    (count a)
+    (.add a "world")
+    (.add a "!")
+    a)
+
+
+
+  (ns some-non-instrumented-ns)
+  (extend-protocol flow-storm.runtime.values/SnapshotP
+    java.util.ArrayList
+    (snapshot-value [a]
+      {:ref/type 'java.util.ArrayList
+       :snapshot/items (into [] a)}))
+
+
+
+  )
