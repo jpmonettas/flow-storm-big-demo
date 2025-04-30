@@ -9,6 +9,84 @@
 
 (def database (jdbc/get-datasource {:dbtype "h2" :dbname "todos"}))
 
+(def styles
+  "body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 2em;
+      max-width: 600px;
+      margin: auto;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 1em;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #ffffff;
+      padding: 1em;
+      margin-bottom: 0.5em;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    li span {
+      flex-grow: 1;
+    }
+
+    .complete {
+      margin-left: 10px;
+      color: green;
+      font-weight: bold;
+    }
+
+    form {
+      margin: 0;
+    }
+
+    input[type=\"submit\"] {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 0.5em 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    input[type=\"submit\"]:hover {
+      background-color: #2980b9;
+    }
+
+    form[action=\"/add-todo\"] {
+      margin-top: 2em;
+      display: flex;
+      gap: 0.5em;
+      align-items: center;
+    }
+
+    input[type=\"text\"] {
+      flex-grow: 1;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    label {
+      font-weight: bold;
+    }")
+
 (defn init-db []
   (jdbc/execute! database ["
 create table todos (
@@ -43,8 +121,7 @@ create table todos (
    (h/html
        [:html
         [:head
-         [:style "h1 {color:red;}
-                  .complete {margin-left: 10px; color: purple;} "]]
+         [:style styles]]
         [:body
          [:h1 "TODOs app"]
          [:ul

@@ -17,7 +17,7 @@
 
   (quick-sort '[3 4 2 7 8 0 9 8 2 3])
   (quick-sort '[3 4 2 7 ])
-
+  user/c
   )
 
 ;;;;;;;;;;;;;;;;
@@ -71,6 +71,13 @@
                     (shuffle c)
                     (shuffle c)])
   )
+
+;;;;;;;;;;;;;;;;;;
+;; Uninstrument ;;
+;;;;;;;;;;;;;;;;;;
+
+(defn sum [a b]
+  (+ a b))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Snapshot value ;;
