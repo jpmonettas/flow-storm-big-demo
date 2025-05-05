@@ -4,7 +4,7 @@
 
 (comment
 
-  (def timeline (idx-api/get-timeline 0 79))
+  (def timeline (idx-api/get-timeline 0 94))
 
   (count timeline)
 
@@ -16,17 +16,17 @@
      (take 3)
      (map idx-api/as-immutable))
 
-  (def expr (get timeline 4))
+  (def expr (get timeline 8))
 
   (idx-api/get-expr-val expr)
 
-  (idx-api/get-sub-form timeline expr)
+  (idx-api/get-sub-form timeline 8)
 
   ;; Query the forms of the first 10 expressions that return nil
   (->> timeline
-       (keep (fn [entry]
-               (when (and (idx-api/expr-trace? entry)
-                          (nil? (idx-api/get-expr-val entry)))
-                 (idx-api/get-sub-form timeline entry))))
+       (keep-indexed (fn [idx entry]
+                       (when (and (idx-api/expr-trace? entry)
+                                  (nil? (idx-api/get-expr-val entry)))
+                         (idx-api/get-sub-form timeline idx))))
        (take 10))
   )

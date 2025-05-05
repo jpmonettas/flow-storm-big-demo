@@ -190,18 +190,20 @@ create table todos (
 
                {:port 7744}))
 
-  (def server (jetty/run-jetty
-
-               (-> (fn handle [req] (#'handler req))
-                   wrap-middlewares)
-
-               {:port 7744
-                :join? false}))
 
   ;; to stop the http server
   (server)
 
 
   (handler user/r)
+
+  ;; (def server (jetty/run-jetty
+
+  ;;              (-> (fn handle [req] (#'handler req))
+  ;;                  wrap-middlewares)
+
+  ;;              {:port 7744
+  ;;               :join? false}))
+
 
   )

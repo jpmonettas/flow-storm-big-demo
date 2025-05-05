@@ -1,4 +1,4 @@
-(ns big-demo.data-windows-demo
+(ns data-windows-demo
   (:require [flow-storm.api :as fsa]
             [flow-storm.debugger.ui.data-windows.visualizers :as viz]
             [flow-storm.runtime.values :as fs-values]
