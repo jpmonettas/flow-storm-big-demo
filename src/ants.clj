@@ -335,35 +335,34 @@
 (require '[clojure.java.io :as io])
 (require '[clojure.math :refer [sqrt pow]])
 
-(defn watch-ants [ants]
-  (doseq [ant-agent ants]
-    (let [ant-dw-id (str ant-agent)
-          ant-dw-scope-id (str ant-agent "-scope")]
-      (fsa/data-window-push-val ant-dw-id ^{:type 'ant}{} "ANT")
-      (fsa/data-window-push-val ant-dw-scope-id 0 "Distance-home")
-      (add-watch ant-agent :dw
-                 (fn [_ _ old-loc new-loc]
-                   (let [p (place new-loc)
-                         home-x 23 home-y 23
-                         [ant-x ant-y] new-loc
-                         ant (:ant @p)
-                         distance-home (sqrt (+ (pow (- home-x ant-x) 2)
-                                                (pow (- home-y ant-y) 2)))]
-                     (fsa/data-window-val-update ant-dw-id (into {} ant))
-                     (fsa/data-window-val-update ant-dw-scope-id distance-home)))))))
-
-(defn unwatch-ants [ants]
-  (doseq [ant-agent ants]
-    (remove-watch ant-agent :dw)))
+(defn watch-ant [ant-agent]
+  (let [ant-dw-id (str ant-agent)
+        stop-probe (fsa/probe-ref ant-agent
+                                  (fn [loc]
+                                    (let [home-x 23 home-y 23
+                                          [ant-x ant-y] loc
+                                          distance-home (sqrt (+ (pow (- home-x ant-x) 2)
+                                                                 (pow (- home-y ant-y) 2)))]
+                                      distance-home))
+                                  (fn [_] 0)
+                                  {:samp-rate 10e3})]
+    (fsa/data-window-push-val ant-dw-id ^{:type 'ant}{} "ANT")
+    (add-watch ant-agent :dw
+               (fn [_ _ old-loc new-loc]
+                 (let [p (place new-loc)
+                       ant (:ant @p)]
+                   (fsa/data-window-val-update ant-dw-id (into {} ant)))))
+    (fn []
+      (stop-probe)
+      (remove-watch ant-agent :dw))))
 
 (comment
-
   (init)
   (run)
   (stop)
 
-  (def dbg-ants (take 1 ants))
-  (watch-ants dbg-ants)
-  (unwatch-ants dbg-ants)
+  (def example-ant (first ants))
+  (def stop-watch (watch-ant example-ant))
+  (stop-watch)
 
   )

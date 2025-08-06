@@ -207,36 +207,32 @@ FOREIGN KEY (person_id) REFERENCES person(id))"])
 
 (comment
 
-  ;; First, we can push a value directly to a data window (even when it doesn't exist)
-  ;; by callling `fsa/data-window-push-val`, providing a data window id, the value itself
-  ;; and optionally a tag for the breadcrum.
-  (fsa/data-window-push-val :changing-long 0 "a-long")
-
-  ;; You should see 3 visualizers for the number, :int, :preview and :scope.
-  ;; Since :preview and :scope supports updates we can update the current value showing on a data window like this :
-  (fsa/data-window-val-update :changing-long 0.5)
-
-  ;; But let's try something a little bit more fun, by creating a thread that sends updates
-  ;; to our :changing-long data window following a sine wave.
+  ;; Let's try something a little bit more fun, by creating a thread that
+  ;; updates an atom with a sine wave
 
   (def scale 0.2) ;; define a scale we will soon redefine while the loop is running
 
-  ;; create a thread that loops and sends the update
+  (def *changing-ref (atom 0))
+
+  ;; create a thread that loops and updates our atom
   (def th
     (Thread.
      (fn []
        (loop [x 0]
          (when-not (Thread/interrupted)
-           (Thread/sleep 10)
-           (fsa/data-window-val-update :changing-long (* scale (Math/sin x)))
+           (Thread/sleep 3)
+           (reset! *changing-ref (* scale (Math/sin x)))
            (recur (+ x 0.1)))))))
 
   ;; start the thread
   (.start th)
 
-  ;; After you start the thread you will see the number on your :preview visualizer changing like
-  ;; crazy. This isn't very useful. Try to select the :scope visualizer to see a plot of those values
-  ;; in real time.
+  ;; Prob it
+  (fsa/probe-ref *changing-ref
+                 (fn [v] v) ;; send the value to channel-1
+                 (fn [v] 0) ;; leaves channel-2 always on zero
+                 {})
+
   ;; While everything is running try to redef the `scale` var with different values.
 
   ;; you can now interrupt that thread
@@ -282,7 +278,8 @@ FOREIGN KEY (person_id) REFERENCES person(id))"])
   (ants/stop)
 
   (def example-ant (first ants/ants))
-  (ants/watch-ants [example-ant])
-  (ants/unwatch-ants [example-ant])
+  (def stop-watch (ants/watch-ant example-ant))
+  (stop-watch)
+
 
   )

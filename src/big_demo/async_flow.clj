@@ -58,7 +58,7 @@
                    (< nums-found 3) {:firsts [{:num num}]}
                    (<= 3 nums-found 6) {:nums [{:nums-found nums-found :num num}]
                                         :firsts [{:num num}]}
-                   :ese {:nums [{:nums-found nums-found :num num}]})]))
+                   :else {:nums [{:nums-found nums-found :num num}]})]))
      [state nil])))
 
 (defn only-evens
