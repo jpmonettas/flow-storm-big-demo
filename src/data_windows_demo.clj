@@ -282,7 +282,8 @@ FOREIGN KEY (person_id) REFERENCES person(id))"])
   (ants/stop)
 
   (def example-ant (first ants/ants))
-  (ants/watch-ants [example-ant])
-  (ants/unwatch-ants [example-ant])
+  (def stop-watch (ants/watch-ant example-ant))
+  (stop-watch)
+
 
   )
